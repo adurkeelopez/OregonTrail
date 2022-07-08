@@ -1,5 +1,5 @@
 package com.kenzie.library;
-git
+
 public class Traveler {
     //TODO: Code Traveler class
     protected String name;
