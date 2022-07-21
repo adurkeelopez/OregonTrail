@@ -6,10 +6,21 @@ import java.util.NoSuchElementException;
 
 public class Main {
     /*** Declare Statics and Constants Here ***/
-    
+    static int daysTravelled = 0;
+    static int milesTravelled = 0;
+
+    final static int TOTAL_MILES = 1600;   //(Total miles required to reach Oregon)
+    final static int MILES_PER_DAY = 20;   //(Total miles travelled per day)
+    final static int FOOD_EXCHANGE = 2;    //(How much food the travelers give each other each time)
+    final static int MAX_DAYS = 100;       //(Maximum number of days to reach Oregon or bust)
+    final static int WAGON_SIZE = 8;       //(Total capacity -- choose either 4, 8 or 12)
+    final static int HUNT_DAYS = 4;        //(this represents how often the party will stop to hunt, 4 means once every 4 days)
+    final static int NUM_TRAVELERS = 1;
+    final static int NUM_HUNTERS = 4;
+    final static int NUM_DOCTORS = 3;
 
     /*** DO NOT CHANGE THE CODE BELOW THIS LINE ***/
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         // This activity has a part one and part two
         //This will only run through if all of the required elements for Part 1 are coded
         OregonTrailPartOne();
@@ -98,12 +109,12 @@ public class Main {
             @SuppressWarnings("unchecked")
             Method getName = Traveler.class.getMethod("getName");
             @SuppressWarnings("unchecked")
-            Method giveFood = Hunter.class.getMethod("giveFood",Traveler.class,int.class);
+            Method giveFood = Hunter.class.getMethod("giveFood", Traveler.class, int.class);
 
             for (Object traveler : travelers) {
                 int amountOfFood = (int) Math.round(Math.random());
                 @SuppressWarnings("unchecked")
-                String nameValue = (String) getName.invoke((Traveler)traveler);
+                String nameValue = (String) getName.invoke((Traveler) traveler);
                 System.out.println("Traveler: " + nameValue);
                 if (!(traveler instanceof Hunter) && !nameValue.equals("Billy Bob")) {
                     giveFood.invoke(steveRinella, traveler, amountOfFood);
@@ -132,7 +143,7 @@ public class Main {
     }
 
     //Oregon trail game engine with runtime method and variable invocation
-    public static void OregonTrailPartTwo()  {
+    public static void OregonTrailPartTwo() {
         try {
             //load all static and constant variables if they exist. Otherise throw exception
             @SuppressWarnings("unchecked")
@@ -170,7 +181,7 @@ public class Main {
             miles_travelled = 0;
             boolean huntFlag = false;
 
-            OregonTrail.loadWagon(wagon,num_travelers,num_doctors,num_hunters);
+            OregonTrail.loadWagon(wagon, num_travelers, num_doctors, num_hunters);
 
             // Display starting state
             OregonTrail.displayStatus(wagon, days_travelled, miles_travelled);
@@ -182,7 +193,7 @@ public class Main {
             Traveler[] passengerArray = (Traveler[]) getPassengers.invoke(wagon);
 
             for (int i = 0; i < max_days; i++) {
-                  OregonTrail.feedWagon(passengerArray);
+                OregonTrail.feedWagon(passengerArray);
 
                 //HUNTING ROUTINE
                 // Check if hunting day - use modulo math to see if HUNT_DAYS divides evenly into totalDays
@@ -204,19 +215,19 @@ public class Main {
 
                 // preparing Hunter giveFood for runtime invocation
                 @SuppressWarnings("unchecked")
-                Method giveFood = Hunter.class.getMethod("giveFood",Traveler.class,int.class);
+                Method giveFood = Hunter.class.getMethod("giveFood", Traveler.class, int.class);
 
                 // preparing Doctor heal for runtime invocation
                 @SuppressWarnings("unchecked")
-                Method heal = Doctor.class.getMethod("heal",Traveler.class);
+                Method heal = Doctor.class.getMethod("heal", Traveler.class);
 
                 // Check quarantine status and care for passengers
-                if ((boolean)shouldQuarantine.invoke(wagon)) {
-                    OregonTrail.quarantineCare(passengerArray,food_exchange);
+                if ((boolean) shouldQuarantine.invoke(wagon)) {
+                    OregonTrail.quarantineCare(passengerArray, food_exchange);
                 }
 
                 // If healthy and not a hunt day, advance milesTraveled
-                if (!(boolean)shouldQuarantine.invoke(wagon) && !huntFlag) {
+                if (!(boolean) shouldQuarantine.invoke(wagon) && !huntFlag) {
                     miles_travelled = miles_travelled + miles_per_day;
                 }
 
@@ -239,12 +250,10 @@ public class Main {
                 //You didn't travel enough miles to make it to Oregon
                 System.out.println("Time has run out! You've died a horrible death on the Oregon Trail.");
             }
-        }
-        catch (NoSuchElementException | NoSuchMethodException | InstantiationException e) {
+        } catch (NoSuchElementException | NoSuchMethodException | InstantiationException e) {
             System.out.println("Part II: There are required elements that are missing. Finish coding all required elements before running Oregon Trail");
             System.out.println(e.getMessage());
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Unexpected exception: " + e.getMessage());
         }
     }
