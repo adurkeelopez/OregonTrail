@@ -211,47 +211,7 @@ public class Main {
                     huntFlag = true;
                     System.out.println("Hunting Day!");
                     OregonTrail.goHunting(passengerArray);
-                    //TYPE HERE
-                    int randWildlife = rand.nextInt(NUM_WILDLIFE_SPECIES);
-                    String availableWildlife = String.valueOf(Wildlife.values()[randWildlife]);     //https://stackoverflow.com/questions/15436721/get-index-of-enum-from-string
-                    int hunterBonusFood;
-
-                    switch (availableWildlife) {
-                        case "BEAR":
-                            hunterBonusFood = 5;
-                            break;
-                        case "BISON":
-                            hunterBonusFood = 4;
-                            break;
-                        case "DEER":
-                        case "PRONGHORN":
-                        case "COYOTE":
-                            hunterBonusFood = 3;
-                            break;
-                        case "RABBIT":
-                        case "SNAKE":
-                            hunterBonusFood = 2;
-                            break;
-                        case "GOPHER":
-                        case "SQUIRREL":
-                        case "PRAIRIE_DOG":
-                            hunterBonusFood = 1;
-                            break;
-                        case "ROCK":
-                        default:
-                            hunterBonusFood = 0;
-                            break;
-                    }
-                    wildlifeCaught[randWildlife]++;
-
-                    for (Traveler passenger : passengerArray) {
-                        if (passenger instanceof Hunter) {
-                            passenger.setFood(passenger.getFood() + hunterBonusFood);
-                        }
-                    }
-                    String bonusHuntText = "The Hunters caught a " + availableWildlife + "!\nBonus " +
-                            hunterBonusFood + " food per Hunter!";
-                    System.out.println(bonusHuntText);
+                    checkForWildlife(passengerArray);
                 } else {
                     huntFlag = false;
                 }
@@ -298,17 +258,7 @@ public class Main {
                 //You didn't travel enough miles to make it to Oregon
                 System.out.println("Time has run out! You've died a horrible death on the Oregon Trail.");
             }
-
-            StringBuilder wildlifeStats = new StringBuilder("Wildlife Caught on this Journey: ");
-            for (int i = 0; i < NUM_WILDLIFE_SPECIES; i++) {
-                wildlifeStats.append(wildlifeCaught[i]).append(" ").append(Wildlife.values()[i])
-                        .append(", ");
-            }
-
-            wildlifeStats.replace(wildlifeStats.lastIndexOf(","), wildlifeStats.length(), "");
-            wildlifeStats.insert(wildlifeStats.lastIndexOf(",") + 1, " and");
-            System.out.println(wildlifeStats);
-
+            printWildlifeStats();
         } catch (NoSuchElementException | NoSuchMethodException | InstantiationException e) {
             System.out.println("Part II: There are required elements that are missing. Finish coding all required elements before running Oregon Trail");
             System.out.println(e.getMessage());
@@ -317,4 +267,59 @@ public class Main {
         }
     }
 
+    static void checkForWildlife(Traveler[] passengerArray) {
+        //TYPE HERE
+        int randWildlife = rand.nextInt(NUM_WILDLIFE_SPECIES);
+        String availableWildlife = String.valueOf(Wildlife.values()[randWildlife]);     //https://stackoverflow.com/questions/15436721/get-index-of-enum-from-string
+        int hunterBonusFood;
+
+        switch (availableWildlife) {
+            case "BEAR":
+                hunterBonusFood = 5;
+                break;
+            case "BISON":
+                hunterBonusFood = 4;
+                break;
+            case "DEER":
+            case "PRONGHORN":
+            case "COYOTE":
+                hunterBonusFood = 3;
+                break;
+            case "RABBIT":
+            case "SNAKE":
+                hunterBonusFood = 2;
+                break;
+            case "GOPHER":
+            case "SQUIRREL":
+            case "PRAIRIE_DOG":
+                hunterBonusFood = 1;
+                break;
+            case "ROCK":
+            default:
+                hunterBonusFood = 0;
+                break;
+        }
+        wildlifeCaught[randWildlife]++;
+
+        for (Traveler passenger : passengerArray) {
+            if (passenger instanceof Hunter) {
+                passenger.setFood(passenger.getFood() + hunterBonusFood);
+            }
+        }
+        String bonusHuntText = "The Hunters caught a " + availableWildlife + "!\nBonus " +
+                hunterBonusFood + " food per Hunter!";
+        System.out.println(bonusHuntText);
+    }
+
+    static void printWildlifeStats() {
+        StringBuilder wildlifeStats = new StringBuilder("Wildlife Caught on this Journey: ");
+        for (int i = 0; i < NUM_WILDLIFE_SPECIES; i++) {
+            wildlifeStats.append(wildlifeCaught[i]).append(" ").append(Wildlife.values()[i])
+                    .append(", ");
+        }
+
+        wildlifeStats.replace(wildlifeStats.lastIndexOf(","), wildlifeStats.length(), "");
+        wildlifeStats.insert(wildlifeStats.lastIndexOf(",") + 1, " and");
+        System.out.println(wildlifeStats);
+    }
 }
