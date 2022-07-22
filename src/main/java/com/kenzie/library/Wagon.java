@@ -68,43 +68,13 @@ public class Wagon {
     }
 
     public void loadWagon(int numTravelers, int numHunters, int numDoctors) {
-        int totalNumToAdd = numTravelers + numHunters + numDoctors;
-        int numTravelerToAdd, numHunterToAdd, numDoctorToAdd;
-
-        if (totalNumToAdd > capacity) {
-            totalNumToAdd = capacity;
-        }
-
-        if (totalNumToAdd >= numTravelers) {
-            numTravelerToAdd = numTravelers;
-        } else {
-            numTravelerToAdd = capacity;
-        }
-
-        if (totalNumToAdd - numTravelerToAdd > 0 && numTravelerToAdd + numHunters <= capacity) {
-            numHunterToAdd = numHunters;
-        } else if (numTravelerToAdd + numHunters > capacity) {
-            numHunterToAdd = capacity - numTravelerToAdd;
-        } else {
-            numHunterToAdd = 0;
-        }
-
-        if (totalNumToAdd - numTravelerToAdd - numHunterToAdd > 0
-                && numTravelerToAdd + numHunterToAdd + numDoctors <= capacity) {
-            numDoctorToAdd = numDoctors;
-        } else if (numTravelerToAdd + numHunterToAdd + numDoctors > capacity) {
-            numDoctorToAdd = capacity - numTravelerToAdd - numHunterToAdd;
-        } else {
-            numDoctorToAdd = 0;
-        }
-
-        for (int i = 0; i < numTravelerToAdd; i++) {
+        for (int i = 0; i < numTravelers; i++) {
             this.join(new Traveler());
         }
-        for (int i = 0; i < numHunterToAdd; i++) {
+        for (int i = 0; i < numHunters; i++) {
             this.join(new Hunter());
         }
-        for (int i = 0; i < numDoctorToAdd; i++) {
+        for (int i = 0; i < numDoctors; i++) {
             this.join(new Doctor());
         }
     }

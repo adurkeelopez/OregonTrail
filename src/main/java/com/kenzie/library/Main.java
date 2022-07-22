@@ -3,21 +3,28 @@ package com.kenzie.library;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 public class Main {
     /*** Declare Statics and Constants Here ***/
     static int daysTravelled = 0;
     static int milesTravelled = 0;
 
-    final static int TOTAL_MILES = 1600;   //(Total miles required to reach Oregon)
-    final static int MILES_PER_DAY = 20;   //(Total miles travelled per day)
-    final static int FOOD_EXCHANGE = 2;    //(How much food the travelers give each other each time)
-    final static int MAX_DAYS = 100;       //(Maximum number of days to reach Oregon or bust)
-    final static int WAGON_SIZE = 8;       //(Total capacity -- choose either 4, 8 or 12)
-    final static int HUNT_DAYS = 4;        //(this represents how often the party will stop to hunt, 4 means once every 4 days)
-    final static int NUM_TRAVELERS = 1;
-    final static int NUM_HUNTERS = 4;
-    final static int NUM_DOCTORS = 3;
+    static final int TOTAL_MILES = 1600;   //(Total miles required to reach Oregon)
+    static final int MILES_PER_DAY = 20;   //(Total miles travelled per day)
+    static final int FOOD_EXCHANGE = 2;    //(How much food the travelers give each other each time)
+    static final int MAX_DAYS = 100;       //(Maximum number of days to reach Oregon or bust)
+    static final int WAGON_SIZE = 8;       //(Total capacity -- choose either 4, 8 or 12)
+    static final int HUNT_DAYS = 4;        //(this represents how often the party will stop to hunt, 4 means once every 4 days)
+    static final int NUM_TRAVELERS = 1;
+    static final int NUM_HUNTERS = 4;
+    static final int NUM_DOCTORS = 3;
+
+    static Random rand = new Random();
+    static final int NUM_WILDLIFE_SPECIES = Wildlife.values().length;
+    //Originally, I wanted to make the bonusHunt String a static, but it kept printing out the wrong values
+    //if I printed it from outside the hunting section.
+    static int[] wildlifeCaught = new int[NUM_WILDLIFE_SPECIES];
 
     /*** DO NOT CHANGE THE CODE BELOW THIS LINE ***/
     public static void main(String[] args) {
@@ -189,7 +196,7 @@ public class Main {
             // preparing eat method in Hunter and Traveler for runtime invocation
             @SuppressWarnings("unchecked")
             Method getPassengers = Wagon.class.getMethod("getPassengers");
-            //get the passngerArray
+            //get the passengerArray
             Traveler[] passengerArray = (Traveler[]) getPassengers.invoke(wagon);
 
             for (int i = 0; i < max_days; i++) {
@@ -204,6 +211,47 @@ public class Main {
                     huntFlag = true;
                     System.out.println("Hunting Day!");
                     OregonTrail.goHunting(passengerArray);
+                    //TYPE HERE
+                    int randWildlife = rand.nextInt(NUM_WILDLIFE_SPECIES);
+                    String availableWildlife = String.valueOf(Wildlife.values()[randWildlife]);     //https://stackoverflow.com/questions/15436721/get-index-of-enum-from-string
+                    int hunterBonusFood;
+
+                    switch (availableWildlife) {
+                        case "BEAR":
+                            hunterBonusFood = 5;
+                            break;
+                        case "BISON":
+                            hunterBonusFood = 4;
+                            break;
+                        case "DEER":
+                        case "PRONGHORN":
+                        case "COYOTE":
+                            hunterBonusFood = 3;
+                            break;
+                        case "RABBIT":
+                        case "SNAKE":
+                            hunterBonusFood = 2;
+                            break;
+                        case "GOPHER":
+                        case "SQUIRREL":
+                        case "PRAIRIE_DOG":
+                            hunterBonusFood = 1;
+                            break;
+                        case "ROCK":
+                        default:
+                            hunterBonusFood = 0;
+                            break;
+                    }
+                    wildlifeCaught[randWildlife]++;
+
+                    for (Traveler passenger : passengerArray) {
+                        if (passenger instanceof Hunter) {
+                            passenger.setFood(passenger.getFood() + hunterBonusFood);
+                        }
+                    }
+                    String bonusHuntText = "The Hunters caught a " + availableWildlife + "!\nBonus " +
+                            hunterBonusFood + " food per Hunter!";
+                    System.out.println(bonusHuntText);
                 } else {
                     huntFlag = false;
                 }
@@ -250,6 +298,17 @@ public class Main {
                 //You didn't travel enough miles to make it to Oregon
                 System.out.println("Time has run out! You've died a horrible death on the Oregon Trail.");
             }
+
+            StringBuilder wildlifeStats = new StringBuilder("Wildlife Caught on this Journey: ");
+            for (int i = 0; i < NUM_WILDLIFE_SPECIES; i++) {
+                wildlifeStats.append(wildlifeCaught[i]).append(" ").append(Wildlife.values()[i])
+                        .append(", ");
+            }
+
+            wildlifeStats.replace(wildlifeStats.lastIndexOf(","), wildlifeStats.length(), "");
+            wildlifeStats.insert(wildlifeStats.lastIndexOf(",") + 1, " and");
+            System.out.println(wildlifeStats);
+
         } catch (NoSuchElementException | NoSuchMethodException | InstantiationException e) {
             System.out.println("Part II: There are required elements that are missing. Finish coding all required elements before running Oregon Trail");
             System.out.println(e.getMessage());
