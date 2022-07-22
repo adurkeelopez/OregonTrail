@@ -268,33 +268,32 @@ public class Main {
     }
 
     static void checkForWildlife(Traveler[] passengerArray) {
-        //TYPE HERE
         int randWildlife = rand.nextInt(NUM_WILDLIFE_SPECIES);
-        String availableWildlife = String.valueOf(Wildlife.values()[randWildlife]);     //https://stackoverflow.com/questions/15436721/get-index-of-enum-from-string
+        Wildlife availableWildlife = Wildlife.values()[randWildlife];   //https://stackoverflow.com/questions/15436721/get-index-of-enum-from-string
         int hunterBonusFood;
 
         switch (availableWildlife) {
-            case "BEAR":
+            case BEAR:
                 hunterBonusFood = 5;
                 break;
-            case "BISON":
+            case BISON:
                 hunterBonusFood = 4;
                 break;
-            case "DEER":
-            case "PRONGHORN":
-            case "COYOTE":
+            case DEER:
+            case PRONGHORN:
+            case COYOTE:
                 hunterBonusFood = 3;
                 break;
-            case "RABBIT":
-            case "SNAKE":
+            case RABBIT:
+            case SNAKE:
                 hunterBonusFood = 2;
                 break;
-            case "GOPHER":
-            case "SQUIRREL":
-            case "PRAIRIE_DOG":
+            case GOPHER:
+            case SQUIRREL:
+            case PRAIRIE_DOG:
                 hunterBonusFood = 1;
                 break;
-            case "ROCK":
+            case ROCK:
             default:
                 hunterBonusFood = 0;
                 break;
